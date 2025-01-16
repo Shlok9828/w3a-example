@@ -4,9 +4,7 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { WALLET_ADAPTERS, CHAIN_NAMESPACES, IProvider, UX_MODE, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { AuthAdapter } from "@web3auth/auth-adapter";
 import "./App.css";
-// import RPC from './evm.web3';
 import RPC from "./evm.viem";
-// import RPC from "./evm.ethers";
 
 const clientId = "BPmNvoksVbfWvTJkRJI3C5fBST2VptWxm12XEOSgj35YttihEcolc53qRLc3_12fgygjmx1nmWO0XIf8Unv8to4"; // get from https://dashboard.web3auth.io
 
@@ -20,20 +18,20 @@ function App() {
       try {
         const chainConfig = {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x5", // Please use 0x5 for Goerli (Devnet)
-          rpcTarget: "https://rpc.ankr.com/eth_goerli",
-          displayName: "Ethereum Goerli",
-          blockExplorerUrl: "https://goerli.etherscan.io/",
-          ticker: "ETH",
-          tickerName: "Ethereum",
-          logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+          chainId: "0x5A", // Sapphire Devnet chain ID
+          rpcTarget: "https://sapphire-devnet.rpc.oasis.dev",
+          displayName: "Sapphire Devnet",
+          blockExplorerUrl: "https://sapphire.oasis.dev/explorer",
+          ticker: "ROSE",
+          tickerName: "Oasis Rose",
+          logo: "https://cryptologos.cc/logos/oasis-network-rose-logo.png",
         };
 
         const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig } });
 
         const web3auth = new Web3AuthNoModal({
           clientId,
-          web3AuthNetwork: WEB3AUTH_NETWORK.TESTNET,
+          web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET, // Correct network name
           privateKeyProvider,
         });
 
@@ -66,16 +64,27 @@ function App() {
   }, []);
 
   const getIdToken = async () => {
-    // Get ID Token from server
-    const res = await fetch("http://localhost:8080/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    return data?.token;
+    try {
+      const res = await fetch("http://localhost:8080/api/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+  
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+  
+      const data = await res.json();
+      return data?.token;
+    } catch (error) {
+      console.error("Error fetching the token:", error);
+      return null; // Handle the error appropriately
+    }
   };
+  
 
   const login = async () => {
     if (!web3auth) {

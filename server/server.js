@@ -9,7 +9,7 @@ const cors = require('cors');
 app.use(cors({ origin: 'http://localhost:3000' }));
 
 // JWKS endpoint
-app.get('/.well-known/jwks.json', (req, res) => {
+app.post('/.well-known/jwks.json', (req, res) => {
   try {
     // Here, manually specify the JWKS fields as per your required format
     const jwks = {
@@ -35,7 +35,7 @@ app.get('/.well-known/jwks.json', (req, res) => {
 });
 
 // Token endpoint to generate JWT
-app.get('/api/token', async (req, res) => {
+app.post('/api/token', async (req, res) => {
   try {
     var privateKey = fs.readFileSync('privateKey.pem');
     var token = jwt.sign(
