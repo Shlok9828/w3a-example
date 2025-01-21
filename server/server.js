@@ -2,31 +2,33 @@ require('dotenv').config(); // enables loading .env vars
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const app = express();
 
-// Allow requests from client-side
-app.use(cors({ origin: 'http://localhost:3000' }));
+// Allow requests from client-side (updated CORS config)
+app.use(cors({
+  origin: 'http://localhost:5173', // Match your frontend's origin
+  methods: ['GET', 'POST'], // Allowed HTTP methods
+  credentials: true // Include this if your frontend uses cookies or Authorization headers
+}));
+app.options('*', cors()); // Handle preflight requests
 
 // JWKS endpoint
 app.post('/.well-known/jwks.json', (req, res) => {
   try {
-    // Here, manually specify the JWKS fields as per your required format
     const jwks = {
       keys: [
         {
           kty: 'RSA',
-          n: 'w_KFYDlDMpFHuIeqHkUyu0JNBgRbwtNpyyKk7tjqdfwIZ60IDJCnYg6Iki6lGF5LNyWH_Sjd4g0sc1LSbEEQxP4sjOnd1SudjFbZPARJf9q0I2DM-Inn6GKO4PE-6MHRSJ1GPUV_k3D3XVPRwz-2CKHd78Fmg2gc3e4X585MmjNdykhXHATfO5zW4d3gMcdCVwQtIOxYeUPWZkomkZ8fQr1IO6njjjMg7kXNWs2z3fKt2iF2U5JY1AxW5vzFF817yUh3hB2p-qVsBqiR4mZKXEw8YKP1ulUV_yRRchhZcchH_swftfKdZivRRtx2sdZGatUVKF0nBYt4FA1hH3B2zQ',
+          n: 'uIh0pFx89-g64cYvlQ75sw1Nmg2Z5XIXOD0mMhdnEeSgB2rBw74fuUnAIybjFdwHvLsyTfznWk65gKJ8Gp5KFdlP79qYcv1Wu01YpBEZrrBGyEHkra_BIHKNGMR3c7xCwXo4598CXr_7OdtApjNY-HiGUgVWq6UOjBzwvcxua33KxULLwAmX7ELfEEnrUaQtc_nC_shtdKuMjmykotY_F9FT3xzcAnkXDr3u4Y3wNRoZJFBa8dwSlCscfo3mXOGh56b_OsJTwvO1D2_s_x0MtqykC1aehcJDenu2jrF9jSqFM-6kiEiNxdg6bca_KJ53Az8Iveb_K60v4fMij0HySQ',
           e: 'AQAB',
           ext: true,
-          kid: '89ce3598c473af1bda4bff95e6c8736450206fba',
+          kid: 'bac2586ababe9f4c8fe0d171593d',
           alg: 'RS256',
           use: 'sig'
         }
       ]
     };
-
-    // Send the JWKS response
     res.json(jwks);
   } catch (error) {
     console.error('Error serving JWKS:', error);
@@ -37,19 +39,19 @@ app.post('/.well-known/jwks.json', (req, res) => {
 // Token endpoint to generate JWT
 app.post('/api/token', async (req, res) => {
   try {
-    var privateKey = fs.readFileSync('privateKey.pem');
-    var token = jwt.sign(
+    const privateKey = fs.readFileSync('privateKey.pem');
+    const token = jwt.sign(
       {
         sub: '9fcd68c4-af50-4dd7-adf6-abd12a13cb32',
-        name: 'Yashovardhan Agrawal',
-        email: 'yash@web3auth.io',
+        name: 'Shlok Verma',
+        email: 'shlok@web3auth.io',
         aud: 'urn:api-web3auth-io',
         iss: 'https://web3auth.io',
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60,
       },
       privateKey,
-      { algorithm: 'RS256', keyid: '89ce3598c473af1bda4bff95e6c8736450206fba' }
+      { algorithm: 'RS256', keyid: 'bac2586ababe9f4c8fe0d171593d' }
     );
     res.status(200).json({ token });
   } catch (error) {

@@ -70,7 +70,7 @@ function App() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({}), // Ensure this matches the backend's expectations
       });
   
       if (!res.ok) {
@@ -81,7 +81,7 @@ function App() {
       return data?.token;
     } catch (error) {
       console.error("Error fetching the token:", error);
-      return null; // Handle the error appropriately
+      return null;
     }
   };
   
