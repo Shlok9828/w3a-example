@@ -40,7 +40,7 @@ function App() {
             uxMode: UX_MODE.REDIRECT,
             loginConfig: {
               jwt: {
-                verifier: "w3a-node-demo",
+                verifier: "w3a-jwt",
                 typeOfLogin: "jwt",
                 clientId,
               },
