@@ -30,7 +30,7 @@ app.post('/api/token', async (req, res) => {
         exp: Math.floor(Date.now() / 1000) + 60 * 60,
       },
       privateKey,
-      { algorithm: 'RS256', keyid: 'bac2586ababe9f4c8fe0d171593d' }
+      { algorithm: 'RS256', keyid: '1bc0f146c50e5d61aa1146454' }
     );
     res.status(200).json({ token });
   } catch (error) {
